@@ -5,3 +5,11 @@ export interface Blog{
     createAt?: Date,
     updatedAt?: Date
 }
+
+export interface Comment{
+    id: number|string
+    author: string,
+    content: string
+    createdAt: Date
+    updatedAt?: Date
+}
