@@ -2,7 +2,6 @@ import BlogItem from "./components/BlogItem";
 import HeaderNav from "./components/HeaderNav";
 import { Blog } from "./utils/@types";
 
-
 const randomBlogs: Blog[] = [
   {
     author: "Jane Doe",
@@ -81,16 +80,16 @@ export default function Home() {
     <main className="min-h-screen w-screen">
       <HeaderNav />
       <div className="py-4 px-8">
-        <div className="">
-         
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold">Welcome to the Blog</h1>
+          <p className="text-gray-600">Stay updated with our latest articles</p>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mt-8">
-          {randomBlogs.map((data)=>(
-            <BlogItem blog={data}  />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+          {randomBlogs.map((data, index) => (
+            <BlogItem key={index} blog={data} />
           ))}
         </div>
-
       </div>
     </main>
   );
