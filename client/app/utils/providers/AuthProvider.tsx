@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import axios from '../api/axiosInstance'
+import axios from '../api/axiosInstance';
 
 const API_URL = '/auth';
 
-export const login = async (username: string, password: string) => {
+const login = async (username: string, password: string) => {
     const response = await axios.post(`${API_URL}/login/`, { username, password });
     return response.data;
 };
 
-export const signup = async (username: string, email: string, password: string) => {
+const signup = async (username: string, email: string, password: string) => {
     const response = await axios.post(`${API_URL}/signup/`, { username, email, password });
     return response.data;
 };
 
-export const validateToken = async (token: string) => {
+const validateToken = async (token: string) => {
     const response = await axios.post(`${API_URL}/test_token/`, {}, {
         headers: {
             Authorization: `Token ${token}`,
@@ -30,7 +30,6 @@ interface AuthContextType {
     login: (username: string, password: string) => Promise<void>;
     signup: (username: string, email: string, password: string) => Promise<void>;
     logout: () => void;
-    validateToken: (token: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -62,7 +61,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const validateTokenHandler = async (token: string) => {
         try {
             const data = await validateToken(token);
-            setUser(data.user);
+            setUser(data);
         } catch (error) {
             logoutHandler();
         }
@@ -72,11 +71,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
             validateTokenHandler(storedToken);
+            setToken(storedToken);
         }
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, token, login: loginHandler, signup: signupHandler, logout: logoutHandler, validateToken: validateTokenHandler }}>
+        <AuthContext.Provider value={{ user, token, login: loginHandler, signup: signupHandler, logout: logoutHandler }}>
             {children}
         </AuthContext.Provider>
     );

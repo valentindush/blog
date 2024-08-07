@@ -33,7 +33,7 @@ def signup(request):
         serializer.save()
         user = User.objects.get(username=request.data['username'])
         user.set_password(request.data['password'])
-        
+
         # Check if email already exists
         if User.objects.filter(email=request.data['email']).exists():
             return Response({"error": "Email address already in use."}, status=status.HTTP_400_BAD_REQUEST)
@@ -48,7 +48,7 @@ def signup(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def test_token(request):
-    return Response("passed for {}".format(request.user.email))
+    return Response({"id": request.user.id, "username": request.user.username, "email": request.user.email})
 
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()
