@@ -107,8 +107,7 @@ export default function Home() {
     }
 
     return (
-        <main className="min-h-screen bg-gray-50">
-            <HeaderNav />
+        <main className="bg-gray-50">
             <main className="px-8 p-4">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-lg font-medium text-blue-600">All Blog Posts</h1>

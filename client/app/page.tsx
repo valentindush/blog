@@ -24,8 +24,7 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="min-h-screen w-screen">
-      <HeaderNav />
+    <main className="w-screen">
       <div className="py-4 px-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold">Welcome to the Blog</h1>

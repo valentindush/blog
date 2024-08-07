@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link";
 import { useAuth } from "../utils/providers/AuthProvider";
 import { FiLogOut, FiUser } from 'react-icons/fi';
@@ -28,7 +30,7 @@ export default function HeaderNav() {
                             <span className="text-gray-800 font-medium">{user.username}</span>
                         </button>
                         {isMenuOpen && (
-                            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                            <div className="absolute right-0 mt-[10rem] w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
                                 <div className="p-4 border-b border-gray-200">
                                     <div className="flex items-center space-x-3">
                                         <FiUser className="text-gray-600" />

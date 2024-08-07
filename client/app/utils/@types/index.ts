@@ -15,7 +15,7 @@ export interface User{
 }
 
 export interface Comment{
-    id: number|string
+    id: number
     author: User,
     content: string
     created_at: Date
