@@ -1,15 +1,23 @@
-export interface Blog{
-    author: string,
+export interface Post{
+    id: number
+    author: User,
     title: string,
     content: string
-    createAt?: Date,
-    updatedAt?: Date
+    create_at?: Date,
+    updated_at?: Date
+    comments?: Comment[]
+}
+
+export interface User{
+    id: number
+    username: string
+    email: string
 }
 
 export interface Comment{
     id: number|string
-    author: string,
+    author: User,
     content: string
-    createdAt: Date
-    updatedAt?: Date
+    created_at: Date
+    updated_at: Date
 }

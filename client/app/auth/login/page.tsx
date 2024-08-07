@@ -7,12 +7,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 interface LoginValues {
-  email: string;
+  username: string;
   password: string;
 }
 
 const LoginSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email').required('Email is required'),
+  username: Yup.string().min(4).max(40).required('username is required'),
   password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
 });
 
@@ -38,7 +38,7 @@ export default function Login() {
 
       // router.push('/dashboard');
     } catch (error) {
-      setLoginError('Invalid email or password');
+      setLoginError('Invalid username or password');
     } finally {
       setSubmitting(false);
     }
@@ -58,15 +58,15 @@ export default function Login() {
             </div>
           )}
           <Formik
-            initialValues={{ email: '', password: '' }}
+            initialValues={{ username: '', password: '' }}
             validationSchema={LoginSchema}
             onSubmit={handleSubmit}
           >
             {({ isSubmitting }) => (
               <Form className="space-y-6">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email
+                  <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                    username
                   </label>
                   <div className="mt-1 relative rounded-md shadow-sm">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -76,13 +76,13 @@ export default function Login() {
                       </svg>
                     </div>
                     <Field
-                      type="email"
-                      name="email"
+                      type="text"
+                      name="username"
                       className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
-                      placeholder="you@example.com"
+                      placeholder="Enter username"
                     />
                   </div>
-                  <ErrorMessage name="email" component="div" className="mt-1 text-sm text-red-600" />
+                  <ErrorMessage name="username" component="div" className="mt-1 text-sm text-red-600" />
                 </div>
 
                 <div>

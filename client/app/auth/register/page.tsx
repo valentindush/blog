@@ -7,13 +7,13 @@ import { useState } from 'react';
 // import { useRouter } from 'next/router';
 
 interface SignupValues {
-  name: string;
+  username: string;
   email: string;
   password: string;
 }
 
 const SignupSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
+  username: Yup.string().min(4).max(40).required('username is required'),
   email: Yup.string().email('Invalid email').required('Email is required'),
   password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
 });
@@ -60,7 +60,7 @@ export default function Signup() {
             </div>
           )}
           <Formik
-            initialValues={{ name: '', email: '', password: '' }}
+            initialValues={{ username: '', email: '', password: '' }}
             validationSchema={SignupSchema}
             onSubmit={handleSubmit}
           >
@@ -68,7 +68,7 @@ export default function Signup() {
               <Form className="space-y-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                    Name
+                    Username
                   </label>
                   <div className="mt-1 relative rounded-md shadow-sm">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -78,12 +78,12 @@ export default function Signup() {
                     </div>
                     <Field
                       type="text"
-                      name="name"
+                      name="username"
                       className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
-                      placeholder="Your full name"
+                      placeholder="Choose a username"
                     />
                   </div>
-                  <ErrorMessage name="name" component="div" className="mt-1 text-sm text-red-600" />
+                  <ErrorMessage name="username" component="div" className="mt-1 text-sm text-red-600" />
                 </div>
 
                 <div>

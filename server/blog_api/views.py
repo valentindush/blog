@@ -42,15 +42,12 @@ def signup(request):
 def test_token(request):
     return Response("passed for {}".format(request.user.email))
 
-# Blog Post Management Views
-
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        # Automatically set the author to the current user
         serializer.save(author=self.request.user)
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -59,19 +56,20 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_update(self, serializer):
-        # Automatically set the author to the current user
         serializer.save(author=self.request.user)
 
 # Comment Management Views
 
-class CommentListCreate(generics.ListCreateAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-    def perform_create(self, serializer):
-        # Automatically set the author to the current user
-        serializer.save(author=self.request.user)
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def add_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    serializer = CommentSerializer(data={'content': request.data.get('content')})
+    if serializer.is_valid():
+        serializer.save(author=request.user, post=post)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
@@ -79,5 +77,4 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_update(self, serializer):
-        # Automatically set the author to the current user
         serializer.save(author=self.request.user)

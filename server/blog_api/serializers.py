@@ -5,23 +5,21 @@ from .models import Post, Comment
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
-
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
+        fields = ['id', 'username', 'email']
 
 class CommentSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+
     class Meta:
         model = Comment
-        fields = ['id', 'post', 'content', 'author', 'created_at', 'updated_at']
-        extra_kwargs = {'author': {'read_only': True}}  # Make 'author' read-only
+        fields = ['id', 'content', 'author', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'author', 'created_at', 'updated_at']
 
 class PostSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Post
         fields = ['id', 'title', 'content', 'author', 'created_at', 'updated_at', 'comments']
-        extra_kwargs = {'author': {'read_only': True}}  # Make 'author' read-only
+        read_only_fields = ['id', 'author', 'created_at', 'updated_at', 'comments']
