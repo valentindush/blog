@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'blog_api'
 ]
 
-# settings.py
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -53,6 +52,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
 }
+
 
 CORS_ALLOW_ALL_ORIGINS = True
 

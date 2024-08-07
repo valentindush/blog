@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
-from rest_framework import status, generics, permissions
+from rest_framework import status, generics
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.authtoken.models import Token
@@ -9,11 +9,13 @@ from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from .serializers import UserSerializer, PostSerializer, CommentSerializer
 from .models import Post, Comment
+from rest_framework.permissions import AllowAny
 
 # Authentication Views
 
 @swagger_auto_schema(method='post', request_body=UserSerializer, tags=['authentication'])
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def login(request):
     user = get_object_or_404(User, username=request.data['username'])
     if not user.check_password(request.data['password']):
@@ -24,12 +26,18 @@ def login(request):
 
 @swagger_auto_schema(method='post', request_body=UserSerializer, tags=['authentication'])
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def signup(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         user = User.objects.get(username=request.data['username'])
         user.set_password(request.data['password'])
+        
+        # Check if email already exists
+        if User.objects.filter(email=request.data['email']).exists():
+            return Response({"error": "Email address already in use."}, status=status.HTTP_400_BAD_REQUEST)
+        
         user.save()
         token = Token.objects.create(user=user)
         return Response({"token": token.key, "user": serializer.data})

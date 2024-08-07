@@ -4,7 +4,8 @@ import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
 import { useState } from 'react';
-// import { useRouter } from 'next/router';
+import { useAuth } from '@/app/utils/providers/AuthProvider';
+import { useRouter } from 'next/navigation';
 
 interface SignupValues {
   username: string;
@@ -20,27 +21,22 @@ const SignupSchema = Yup.object().shape({
 
 export default function Signup() {
   const [signupError, setSignupError] = useState<string | null>(null);
-  // const router = useRouter();
-
+  const {signup} = useAuth()
+  const router = useRouter()
   const handleSubmit = async (
     values: SignupValues,
     { setSubmitting }: FormikHelpers<SignupValues>
   ) => {
+    setSignupError(null)
     try {
-      // Replace this with your actual signup API call
-      const response = await fetch('/api/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        throw new Error('Signup failed');
-      }
-
-      // router.push('/dashboard');
-    } catch (error) {
-      setSignupError('Signup failed. Please try again.');
+      await signup(values.username, values.email, values.password)
+      router.push('/home')
+    } catch (error: any) {
+      const errors = error.response.data
+      const keys = Object.keys(errors)
+      const key = keys[0]
+      console.log(errors[key])
+      setSignupError(errors[key] || "Signup failed");
     } finally {
       setSubmitting(false);
     }

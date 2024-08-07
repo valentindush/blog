@@ -4,7 +4,8 @@ import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/app/utils/providers/AuthProvider';
 
 interface LoginValues {
   username: string;
@@ -18,25 +19,17 @@ const LoginSchema = Yup.object().shape({
 
 export default function Login() {
   const [loginError, setLoginError] = useState<string | null>(null);
-  // const router = useRouter();
+  const router = useRouter();
+  const {login} = useAuth()
 
   const handleSubmit = async (
     values: LoginValues,
     { setSubmitting }: FormikHelpers<LoginValues>
   ) => {
+    setLoginError(null)
     try {
-      // Replace this with your actual login API call
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        throw new Error('Login failed');
-      }
-
-      // router.push('/dashboard');
+      await login(values.username, values.password)
+      router.push('/home')
     } catch (error) {
       setLoginError('Invalid username or password');
     } finally {
@@ -71,8 +64,7 @@ export default function Login() {
                   <div className="mt-1 relative rounded-md shadow-sm">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                       </svg>
                     </div>
                     <Field
