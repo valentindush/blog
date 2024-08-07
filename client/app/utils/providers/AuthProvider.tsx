@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import axios from '../api/axiosInstance';
+import { useRouter } from 'next/navigation';
 
 const API_URL = '/auth';
 
@@ -37,7 +38,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<any>(null);
     const [token, setToken] = useState<string | null>(null);
-
+    const router = useRouter()
     const loginHandler = async (username: string, password: string) => {
         const data = await login(username, password);
         setUser(data.user);
@@ -56,6 +57,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setUser(null);
         setToken(null);
         localStorage.removeItem('token');
+        router.push('/auth/login')
     };
 
     const validateTokenHandler = async (token: string) => {
