@@ -50,6 +50,7 @@ class PostList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
+        # Automatically set the author to the current user
         serializer.save(author=self.request.user)
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -58,6 +59,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_update(self, serializer):
+        # Automatically set the author to the current user
         serializer.save(author=self.request.user)
 
 # Comment Management Views
@@ -68,9 +70,14 @@ class CommentListCreate(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
+        # Automatically set the author to the current user
         serializer.save(author=self.request.user)
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_update(self, serializer):
+        # Automatically set the author to the current user
+        serializer.save(author=self.request.user)
