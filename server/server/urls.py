@@ -1,8 +1,7 @@
-from django.urls import re_path
-from .auth import auth
+from django.urls import include, path
+from django.contrib import admin
 
 urlpatterns = [
-    re_path('api/auth/login', auth.login),
-    re_path('api/auth/signup', auth.signup),
-    # re_path('api/auth/test_token', auth.test_token)
+    path('admin/', admin.site.urls),
+    path('api/', include('blog_api.urls'))
 ]
