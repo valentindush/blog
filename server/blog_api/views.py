@@ -1,4 +1,3 @@
-from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions
@@ -6,11 +5,14 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
 from .serializers import UserSerializer, PostSerializer, CommentSerializer
 from .models import Post, Comment
 
 # Authentication Views
 
+@swagger_auto_schema(method='post', request_body=UserSerializer, tags=['authentication'])
 @api_view(['POST'])
 def login(request):
     user = get_object_or_404(User, username=request.data['username'])
@@ -20,6 +22,7 @@ def login(request):
     serializer = UserSerializer(instance=user)
     return Response({"token": token.key, "user": serializer.data})
 
+@swagger_auto_schema(method='post', request_body=UserSerializer, tags=['authentication'])
 @api_view(['POST'])
 def signup(request):
     serializer = UserSerializer(data=request.data)
@@ -32,6 +35,7 @@ def signup(request):
         return Response({"token": token.key, "user": serializer.data})
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@swagger_auto_schema(method='post', tags=['authentication'])
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -55,6 +59,8 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         serializer.save(author=self.request.user)
+
+# Comment Management Views
 
 class CommentListCreate(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
